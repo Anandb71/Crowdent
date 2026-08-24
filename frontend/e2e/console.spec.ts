@@ -4,8 +4,10 @@ test('operator can inspect comparison and safety suppression', async ({ page }) 
   await page.goto('/')
 
   await expect(page.getByText('RESEARCH ONLY — NOT DEPLOYMENT CERTIFIED')).toBeVisible()
-  await expect(page.getByLabel('Intervention comparison').getByText('No action')).toBeVisible()
-  await expect(page.getByText('Meter north entry')).toBeVisible()
+  await expect(page.getByLabel('Intervention comparison').getByText('No action', { exact: true })).toBeVisible()
+  await expect(
+    page.getByLabel('Intervention comparison').getByText('Meter north entry', { exact: true }),
+  ).toBeVisible()
 
   await page.getByLabel('Failure injection').selectOption('stale')
   await expect(page.getByRole('alert')).toContainText('recommendation suppressed')
