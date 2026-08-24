@@ -6,7 +6,8 @@ venue certification.
 ## Automated suite
 
 - Python: `uv run pytest` (contracts, safety, ingest SSRF/privacy, numerics,
-  storage, API, CLI doctor, runtime isolation from PyTorch).
+  storage, API, CLI doctor, runtime isolation from PyTorch, forecast
+  verification and calibration, dataset registry and manifests).
 - Lint and types: `uv run ruff check src tests training` and
   `uv run mypy src/crowdent`.
 - Frontend: `npm run lint`, `npm run typecheck`, `npm run test`,
@@ -23,6 +24,27 @@ tight tolerance after accounting for exit outflow. Ensemble forecasts require
 finite samples and at least two members. Homography calibration rejects
 collinear or high-reprojection geometries. Crowd-pressure tests assert the
 unit string is an index, not Pascals.
+
+## Forecast verification
+
+`crowdent.verification` provides the evidence that a forecast is worth
+showing a human: fair CRPS and energy score against a stated baseline,
+Brier score with the Murphy decomposition for threshold exceedance, and
+calibration diagnostics (rank histogram, spread-skill ratio, interval
+coverage). Reports flag under-dispersion, coverage below what the
+ensemble size can attain, and any lead time with no skill over its
+baseline.
+
+The unit tests check these against closed forms rather than against
+themselves: ensemble CRPS is compared with the analytic Gaussian CRPS,
+the Brier decomposition identity is asserted exactly, the energy score is
+shown to reduce to CRPS in one dimension, and propriety is checked by
+confirming that a biased or overconfident ensemble scores worse than an
+honest one.
+
+Running a verification report is not validation of a venue. See
+[research/verification-protocol.md](research/verification-protocol.md)
+for the protocol and its limits.
 
 ## Chaos / fail-degraded
 
