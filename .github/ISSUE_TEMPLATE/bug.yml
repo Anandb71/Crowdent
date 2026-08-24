@@ -1,0 +1,40 @@
+name: Bug report
+description: Report a research-platform defect. Not for venue emergencies.
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Crowdent is research-only and not deployment certified.
+        Do not attach real crowd video, credentials, or personal identifiers.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What happened, and what you expected.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Output of `uv run crowdent doctor --json`, OS, and Python version.
+    validations:
+      required: true
+  - type: dropdown
+    id: safety
+    attributes:
+      label: Does this affect fail-degraded advice or actuation boundaries?
+      options:
+        - "No"
+        - "Yes — advice or countdown leaked"
+        - "Yes — other safety boundary"
+    validations:
+      required: true

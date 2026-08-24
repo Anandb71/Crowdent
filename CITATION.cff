@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+title: Crowdent
+message: If you use this software, please cite it using these metadata.
+type: software
+authors:
+  - name: Crowdent contributors
+license: Apache-2.0
+version: 0.1.0
+date-released: "2026-08-24"
+repository-code: https://github.com/Anandb71/Crowdent
+abstract: >
+  Offline, uncertainty-aware crowd-crush forecasting research platform.
+  Human advisory only; not deployment certified; no hardware actuation.
+keywords:
+  - crowd safety
+  - forecasting
+  - computer vision
+  - ensemble Kalman filter

@@ -1,0 +1,31 @@
+name: Feature request
+description: Propose a research-platform improvement.
+title: "[feature] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: Hardware actuation, cloud telemetry, and deployment-ready claims are out of scope.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+    validations:
+      required: true
+  - type: checkboxes
+    id: invariants
+    attributes:
+      label: Invariants
+      options:
+        - label: This does not add gate, PA, or signage actuation.
+          required: true
+        - label: This keeps countdown and advice gated on READY.
+          required: true
+        - label: This does not import torch in the runtime package.
+          required: true

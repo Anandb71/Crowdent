@@ -1,0 +1,51 @@
+profiles:
+  demo:
+    mode: DEMO_DETERMINISTIC
+    site_id: demo-venue
+    network:
+      host: 127.0.0.1
+      port: 8000
+      allow_lan: false
+      cors_origins:
+        - http://localhost:5173
+      docs_enabled: true
+    storage:
+      root: .crowdent/demo
+      raw_video_enabled: false
+    safety:
+      require_signed_readiness_manifest: false
+
+  replay:
+    mode: REPLAY_RESEARCH
+    site_id: replay-unconfigured
+    network:
+      host: 127.0.0.1
+      port: 8000
+      allow_lan: false
+      docs_enabled: true
+    storage:
+      root: .crowdent/replay
+      raw_video_enabled: false
+
+  field:
+    mode: FIELD_RESEARCH
+    site_id: REPLACE_WITH_SURVEYED_SITE_ID
+    network:
+      host: 127.0.0.1
+      port: 8000
+      allow_lan: false
+      cors_origins: []
+      docs_enabled: false
+    storage:
+      root: .crowdent/field
+      raw_video_enabled: false
+      raw_video_retention_hours: 0
+      chunk_retention_days: 7
+    safety:
+      allowed_actions:
+        - PAUSE_INFLOW
+        - METER_INFLOW
+        - HOLD_ARRIVAL
+      require_signed_readiness_manifest: true
+      stale_after_seconds: 10
+      instruction_ttl_seconds: 300

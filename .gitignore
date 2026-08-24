@@ -1,0 +1,80 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# JavaScript
+frontend/node_modules/
+frontend/dist/
+frontend/coverage/
+frontend/playwright-report/
+frontend/test-results/
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*.json
+service-account*.json
+secrets/
+
+# Crowdent runtime state
+.crowdent/
+runtime/
+logs/
+*.log
+*.sqlite
+*.sqlite3
+*.db
+*.db-wal
+*.db-shm
+*.npz
+*.npy
+
+# Sensitive or large sensor data
+data/*
+!data/README.md
+!data/.gitkeep
+models/*
+!models/README.md
+!models/*.example.json
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.webm
+*.onnx
+*.pt
+*.pth
+*.ckpt
+
+# Local editor and agent state
+.cursor/
+.claude/
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+~$*

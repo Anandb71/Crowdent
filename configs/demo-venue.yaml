@@ -1,0 +1,31 @@
+schema_version: 1
+site_id: demo-venue
+label: Synthetic Transit Concourse
+coordinate_frame: demo-ground-grid
+cell_size_m: 1.0
+grid:
+  rows: 12
+  columns: 20
+zones:
+  - id: platform
+    safe_occupancy_people_per_m2: 4.0
+    route_classes: [eastbound, westbound]
+  - id: footbridge
+    safe_occupancy_people_per_m2: 3.5
+    route_classes: [outbound]
+  - id: forecourt
+    safe_occupancy_people_per_m2: 3.0
+    route_classes: [arrival, departure]
+gates:
+  - id: north
+    width_m: 2.0
+    specific_flow_capacity_people_per_m_s: 1.2
+  - id: south
+    width_m: 1.5
+    specific_flow_capacity_people_per_m_s: 1.2
+literature_observations:
+  crowd_pressure_index_s2: 0.02
+  outflow_people_per_m_s: 0.8
+  note: >-
+    Literature observations are demonstration defaults, not universal safety
+    limits. A qualified venue safety lead must approve field thresholds.
