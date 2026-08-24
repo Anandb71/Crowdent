@@ -14,6 +14,11 @@ This repository is an offline crowd-risk **research** platform.
 - Optical flow is not density.
 - Do not commit videos, weights, `.env`, or personal identifiers.
 - Do not label releases deployment-ready.
+- Never give `crowdent.datasets` a network client. It records terms; it
+  does not download, and it never accepts a licence for an operator.
+- Never let `crowdent.verification` set readiness, emit a countdown, or
+  gate advice. `calibrated` is a screening result, not readiness.
+- Never quote an absolute CRPS without its baseline skill score.
 
 ## Tooling
 
