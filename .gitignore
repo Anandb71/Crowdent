@@ -34,7 +34,7 @@ secrets/
 
 # Crowdent runtime state
 .crowdent/
-runtime/
+/runtime/
 logs/
 *.log
 *.sqlite
