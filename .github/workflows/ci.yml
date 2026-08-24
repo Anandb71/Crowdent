@@ -36,7 +36,7 @@ jobs:
       - name: Mypy
         run: uv run mypy src/crowdent
       - name: Pytest
-        run: uv run pytest -q
+        run: uv run pytest -q --cov --cov-report=term-missing --cov-fail-under=80
 
   frontend:
     name: Frontend
