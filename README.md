@@ -78,6 +78,35 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
+## Forecast verification
+
+`crowdent.verification` scores whether a forecast is skilful and whether
+its uncertainty is honest: fair CRPS, energy score, pinball loss, Brier
+score with the Murphy decomposition, Talagrand rank histograms,
+spread-skill ratio, and interval coverage. Reports flag under-dispersion,
+missing coverage, and any lead time with no skill over its baseline.
+
+A report is a screening result on one timeline. It is not readiness and
+not certification: the package holds no readiness state, emits no
+countdown, and has no hardware interface. See
+[docs/research/verification-protocol.md](docs/research/verification-protocol.md).
+
+## Datasets
+
+No dataset ships with this repository and **Crowdent downloads nothing**.
+`crowdent.datasets` records where public crowd datasets live, their
+published access terms, and which Crowdent claim each one can falsify.
+
+```powershell
+uv run crowdent dataset list
+uv run crowdent dataset show juelich-ped-da
+```
+
+Acquisition is a deliberate human act: read the terms, accept them
+yourself, download to a research machine, then hash the copy with
+`crowdent dataset manifest` so a result names the exact bytes it scored.
+See [docs/research/datasets.md](docs/research/datasets.md).
+
 ## Runtime modes
 
 | Mode | Purpose |
@@ -104,6 +133,10 @@ profile. Copy `configs/crowdent.example.yaml` and replace the site id.
 - [Data card](docs/data-card.md)
 - [Troubleshooting](docs/troubleshooting.md)
 - [References](docs/references.md)
+- [Research notes](docs/research/README.md) —
+  [literature](docs/research/literature.md),
+  [datasets](docs/research/datasets.md),
+  [verification protocol](docs/research/verification-protocol.md)
 
 ## License
 
