@@ -1,149 +1,60 @@
-# Crowdent
+# StillDot
 
-**RESEARCH ONLY — NOT DEPLOYMENT CERTIFIED**
+**Research demo — not deployment-ready.**
 
-Crowdent is an offline, uncertainty-aware research platform for crowd-crush
-forecasting from existing venue sensors. It produces human-reviewed advisories.
-It does not actuate gates, public-address systems, or signage, and it is not a
-certified public-safety product.
+SIH26168 · AI-ML based Intelligent Dead Reckoning · ISRO · Smart Vehicles
 
-Use this software only in a supervised research, tabletop, or recorded-replay
-setting. Field deployments require independent venue calibration, hold-out
-validation, a signed readiness manifest, and an explicit operational authority
-that this repository does not grant.
+Your phone loses GNSS because a roof got in the way, not because the
+satellites failed. StillDot keeps a position estimate using only the
+IMU the phone already has. No OBD wire. No internet. No actuation.
 
-## What it does
+The network estimates **speed and uncertainty**. The filter estimates
+**position**. We never integrate acceleration twice to get distance.
 
-- Fuses camera-derived density and optical-flow velocity with optional
-  schedules, counters, and anonymous zone aggregates.
-- Forecasts route-aware crowd state with ensemble uncertainty and explicit
-  SI units.
-- Compares a no-action baseline against a hypothetical intervention on a
-  shared initial ensemble.
-- Suppresses countdown and advice whenever readiness is not `READY`.
-- Records a hash-chained local audit trail of human advisory decisions.
+## Demo (the laptop fallback)
 
-## What it does not do
+The pitch script says: if the phones fail, replay on the laptop. That
+is this console.
 
-- No hardware actuation API, PLC, or signage driver.
-- No cloud telemetry and no default LAN bind.
-- No deployment certificate, NDMA approval, or operational warranty.
-- No claim that Helbing 2007 defaults are universal venue thresholds.
-
-Crowd pressure in this codebase is an **index** `density × velocity variance`
-with units `s^-2`. It is not mechanical pressure in Pascals. Optical flow is
-not a density estimator; density comes from an independent adapter.
-
-## Quick start
-
-Requires Python 3.13, [uv](https://docs.astral.sh/uv/), Node.js 24, and npm.
-There is no Docker image in this repository.
-
-```powershell
-uv sync
-cd frontend
-npm install
-npm run build
-cd ..
-uv run crowdent doctor --json
-uv run crowdent demo --no-browser
+```bash
+uv sync --group dev
+cd frontend && npm install && npm run build && cd ..
+uv run stilldot demo
 ```
 
-Then open `http://127.0.0.1:8000` if the frontend bundle exists, or run the
-console separately:
+Open `http://127.0.0.1:8000`. Tap **START**. The room-walk path draws
+live, then the drift figure is read out in metres and as a percentage
+of distance travelled. The requirement is under 10%.
 
-```powershell
-cd frontend
-npm run dev
-```
+Airplane mode on a phone is the live path. This laptop replay is the
+same engine on a surveyed synthetic path — labelled as such on screen.
 
-The deterministic demo is synthetic. Demo badges, `research_only: true`, and
-`hardware_actuation_available: false` stay visible on every screen.
+## What is real, what is not
+
+| Built and measured | Not built |
+| --- | --- |
+| Time-aligned IMU, alignment, virtual odometer, ZUPT, NHC, 10 Hz output | IO-VNBD training / country hold-out numbers |
+| Room walk (50 m) and tunnel (1 km / 60 km/h) replays | Full invariant EKF on a Lie group |
+| Naive ∫∫a comparison (the t² lesson) | Map matching against OpenStreetMap |
+| Live DeviceMotion ingest | A published Indian-road score |
+
+Do not quote an accuracy number without the scenario, the distance,
+and the fact that these replays are synthetic.
 
 ## Tests
 
-```powershell
-uv run ruff check src tests training
-uv run mypy src/crowdent
+```bash
+uv run ruff check src tests
+uv run mypy src/stilldot
 uv run pytest
-cd frontend
-npm run check
+cd frontend && npm run check
 ```
 
-Playwright end-to-end tests:
+## Language
 
-```powershell
-cd frontend
-npx playwright install chromium
-npm run test:e2e
-```
-
-## Forecast verification
-
-`crowdent.verification` scores whether a forecast is skilful and whether
-its uncertainty is honest: fair CRPS, energy score, pinball loss, Brier
-score with the Murphy decomposition, Talagrand rank histograms,
-spread-skill ratio, and interval coverage. Reports flag under-dispersion,
-missing coverage, and any lead time with no skill over its baseline.
-
-A report is a screening result on one timeline. It is not readiness and
-not certification: the package holds no readiness state, emits no
-countdown, and has no hardware interface. See
-[docs/research/verification-protocol.md](docs/research/verification-protocol.md).
-
-## Datasets
-
-No dataset ships with this repository and **Crowdent downloads nothing**.
-`crowdent.datasets` records where public crowd datasets live, their
-published access terms, and which Crowdent claim each one can falsify.
-
-```powershell
-uv run crowdent dataset list
-uv run crowdent dataset show juelich-ped-da
-```
-
-Acquisition is a deliberate human act: read the terms, accept them
-yourself, download to a research machine, then hash the copy with
-`crowdent dataset manifest` so a result names the exact bytes it scored.
-See [docs/research/datasets.md](docs/research/datasets.md).
-
-## Runtime modes
-
-| Mode | Purpose |
-| --- | --- |
-| `DEMO_DETERMINISTIC` | Seeded synthetic venue. Docs enabled. Demo actor headers. |
-| `REPLAY_RESEARCH` | Immutable recorded bundle. No live cameras required. |
-| `FIELD_RESEARCH` | Local research run. Docs disabled. Authentication required. Field does not inherit demo values. |
-
-Non-loopback binds require `network.allow_lan: true` in a validated YAML
-profile. Copy `configs/crowdent.example.yaml` and replace the site id.
-
-## Documentation
-
-- [Getting started](docs/getting-started.md)
-- [Architecture](docs/architecture.md)
-- [Algorithms and units](docs/algorithms.md)
-- [Operator console](docs/operator.md)
-- [Safety and readiness](docs/safety-readiness.md)
-- [Offline deployment](docs/offline-deploy.md)
-- [Validation](docs/validation.md)
-- [Threat model](docs/threat-model.md)
-- [Privacy](docs/privacy.md)
-- [Model card](docs/model-card.md)
-- [Data card](docs/data-card.md)
-- [Troubleshooting](docs/troubleshooting.md)
-- [References](docs/references.md)
-- [Research notes](docs/research/README.md) —
-  [literature](docs/research/literature.md),
-  [datasets](docs/research/datasets.md),
-  [verification protocol](docs/research/verification-protocol.md)
+Never say “we used AI to predict the position.” Say: the network
+estimates speed and uncertainty; the filter estimates position.
 
 ## License
 
-Apache License 2.0. See [LICENSE](LICENSE) and [NOTICE](NOTICE).
-
-## Citation
-
-See [CITATION.cff](CITATION.cff). Literature defaults (Helbing 2007 and NDMA
-crowd-management guidance) are cited in [docs/references.md](docs/references.md).
-They are starting points for venue-specific calibration, not shipping thresholds.
+Apache License 2.0. See [LICENSE](LICENSE).

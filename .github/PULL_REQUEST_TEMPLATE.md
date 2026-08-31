@@ -4,14 +4,14 @@
 
 ## Safety
 
-- [ ] No hardware actuation, cloud telemetry, or deployment-ready claims
-- [ ] Countdown and advice remain forbidden unless readiness is `READY`
+- [ ] No hardware actuation or deployment-ready claims
 - [ ] Runtime code does not import `torch`
-- [ ] Field profiles do not inherit demo network or docs settings
+- [ ] Demo bind stays on loopback
+- [ ] Drift numbers include distance, duration, and scenario
 
 ## Test plan
 
-- [ ] `uv run ruff check src tests training`
-- [ ] `uv run mypy src/crowdent`
+- [ ] `uv run ruff check src tests`
+- [ ] `uv run mypy src/stilldot`
 - [ ] `uv run pytest`
 - [ ] `npm run check` in `frontend/`

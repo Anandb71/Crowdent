@@ -1,64 +1,56 @@
-import { z } from 'zod'
+export type Stage = 'idle' | 'align' | 'odometer' | 'filter' | 'zupt' | 'map'
 
-export const zoneSchema = z.object({
-  id: z.string(),
-  label: z.string(),
-  risk_probability: z.number().min(0).max(1),
-  density_people_per_m2: z.number().nonnegative(),
-  crowd_pressure_index_s2: z.number().nonnegative(),
-  readiness: z.enum(['READY', 'DEGRADED', 'UNKNOWN']),
-})
+export type VehicleClass = 'pedestrian' | 'vehicle'
 
-export const sensorSchema = z.object({
-  id: z.string(),
-  kind: z.string(),
-  age_s: z.number().nonnegative(),
-  state: z.enum(['HEALTHY', 'DEGRADED', 'OFFLINE']),
-})
+export type Frame = {
+  t: number
+  x: number
+  y: number
+  heading: number
+  speed: number
+  truth_x: number
+  truth_y: number
+  naive_x: number
+  naive_y: number
+  zupt: boolean
+  nhc: boolean
+  odo_speed: number
+  gnss_denied: boolean
+  alignment_yaw_deg: number
+  trust: number
+  stage: Stage
+}
 
-export const forecastPointSchema = z.object({
-  minutes: z.number().nonnegative(),
-  baseline: z.number().min(0).max(1),
-  intervention: z.number().min(0).max(1),
-  p10: z.number().min(0).max(1),
-  p90: z.number().min(0).max(1),
-})
+export type ScenarioSpec = {
+  id: string
+  title: string
+  pitch_line: string
+  vehicle_class: VehicleClass
+  requirement_pct: number
+  requirement_note: string
+  honesty: string[]
+}
 
-export const recommendationSchema = z.object({
-  action: z.string(),
-  inflow_people_per_s: z.number().nonnegative(),
-  gate_equivalent: z.number().int().nonnegative(),
-  expires_in_s: z.number().int().positive(),
-  reason_codes: z.array(z.string()),
-  assumptions: z.array(z.string()),
-  hypothetical: z.literal(true),
-})
+export type RunMetrics = {
+  distance_m: number
+  duration_s: number
+  drift_m: number
+  drift_pct: number
+  naive_drift_m: number
+  naive_drift_pct: number
+  requirement_pct: number
+  requirement_met: boolean
+  final_speed: number
+  zupt_locked: boolean
+  sample_hz: number
+  output_hz: number
+}
 
-export const snapshotSchema = z.object({
-  schema_version: z.literal(1),
-  mode: z.enum(['DEMO_DETERMINISTIC', 'REPLAY_RESEARCH', 'FIELD_RESEARCH']),
-  research_only: z.literal(true),
-  synthetic: z.boolean(),
-  hardware_actuation_available: z.literal(false),
-  venue: z.object({
-    name: z.string(),
-    zones: z.array(zoneSchema).min(1),
-  }),
-  sensor_health: z.array(sensorSchema),
-  forecast: z.array(forecastPointSchema).min(1),
-  recommendation: recommendationSchema,
-})
-
-export type Zone = z.infer<typeof zoneSchema>
-export type Sensor = z.infer<typeof sensorSchema>
-export type ForecastPoint = z.infer<typeof forecastPointSchema>
-export type Recommendation = z.infer<typeof recommendationSchema>
-export type Snapshot = z.infer<typeof snapshotSchema>
-export type Readiness = 'READY' | 'DEGRADED' | 'UNKNOWN'
-export type Fault = 'none' | 'stale' | 'conflict' | 'clock'
-export type InstructionLifecycle =
-  | 'draft'
-  | 'acknowledged'
-  | 'accepted'
-  | 'rejected'
-  | 'physical_action_confirmed'
+export type RunResult = {
+  scenario: ScenarioSpec
+  metrics: RunMetrics
+  frames: Frame[]
+  start: [number, number]
+  end_truth: [number, number]
+  end_estimate: [number, number]
+}

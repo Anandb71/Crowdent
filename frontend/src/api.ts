@@ -1,29 +1,27 @@
-import { DEMO_SNAPSHOT } from './demo'
-import { snapshotSchema, type Snapshot } from './types'
+import type { RunResult, ScenarioSpec } from './types'
 
-const REQUEST_TIMEOUT_MS = 1500
+export async function fetchHealth(): Promise<{ ok: boolean; offline: boolean }> {
+  const res = await fetch('/api/health')
+  if (!res.ok) throw new Error('health check failed')
+  return res.json() as Promise<{ ok: boolean; offline: boolean }>
+}
 
-export async function loadSnapshot(signal?: AbortSignal): Promise<Snapshot> {
-  const controller = new AbortController()
-  const timer = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS)
-  const abort = () => controller.abort()
-  signal?.addEventListener('abort', abort, { once: true })
+export async function fetchScenarios(): Promise<ScenarioSpec[]> {
+  const res = await fetch('/api/scenarios')
+  if (!res.ok) throw new Error('scenarios unavailable')
+  return res.json() as Promise<ScenarioSpec[]>
+}
+
+export async function fetchRun(scenarioId: string): Promise<RunResult> {
   try {
-    const response = await fetch('/api/v1/demo/snapshot', {
-      signal: controller.signal,
-      headers: { Accept: 'application/json' },
-      credentials: 'same-origin',
-    })
-    if (!response.ok) {
-      throw new Error(`snapshot request failed: ${response.status}`)
-    }
-    return snapshotSchema.parse(await response.json())
+    const res = await fetch(`/api/scenarios/${scenarioId}/run`)
+    if (res.ok) return (await res.json()) as RunResult
   } catch {
-    // The bundled deterministic fixture keeps the console demonstrable while
-    // the local API is not running. FIELD mode never uses this fallback.
-    return DEMO_SNAPSHOT
-  } finally {
-    window.clearTimeout(timer)
-    signal?.removeEventListener('abort', abort)
+    // fall through to the baked replay — the pitch is offline
   }
+  const fallback = await fetch(`/demo/${scenarioId}.json`)
+  if (!fallback.ok) {
+    throw new Error(`no replay for ${scenarioId}`)
+  }
+  return (await fallback.json()) as RunResult
 }

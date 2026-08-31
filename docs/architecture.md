@@ -1,60 +1,20 @@
 # Architecture
 
-Crowdent is an offline modular monolith: one Python process, one SQLite
-writer, and a React operator console. There is no microservice mesh and no
-cloud control plane.
+Six stages. Two of them look like networks; the rest is physics.
 
-## Processes
+1. **Sensor conditioning** — accelerometer and gyroscope interpolated
+   onto one 100 Hz clock.
+2. **Alignment** — gravity gives roll and pitch; first motion gives yaw.
+3. **Virtual odometer** — pedestrian bounce or 8-24 Hz chassis
+   vibration to a speed. Never `∫ a dt`.
+4. **Filter** — heading, speed, position, gyro bias. Corrected by the
+   odometer, the non-holonomic constraint, and zero-velocity updates.
+5. **Trust** — turn rate and speed jerk widen the measurement noise.
+6. **Output** — 10 Hz pose, drift against a surveyed end point.
 
-```
-sensors / recorded files / synthetic demo
-        │
-        ▼
-  ingest adapters ──► perception ──► numerics ──► safety
-        │                │              │            │
-        └────────────────┴──────────────┴────────────┘
-                         │
-                         ▼
-              ResearchService (advisory only)
-                         │
-          ┌──────────────┼──────────────┐
-          ▼              ▼              ▼
-     FastAPI API    SQLite+WAL     static console
-```
+A network trained to emit position memorises roads. Speed and
+uncertainty are local. Position is an integral of facts a vehicle
+cannot break.
 
-The console is a local SPA. In demo mode FastAPI can serve `frontend/dist`.
-In development Vite talks to the API on loopback.
-
-## Layers
-
-| Layer | Package | Responsibility |
-| --- | --- | --- |
-| Contracts | `crowdent.contracts` | Frozen Pydantic models, units, provenance, readiness |
-| Runtime | `crowdent.runtime` | Immutable YAML profiles; field does not inherit demo |
-| Ingest | `crowdent.ingest` | Schedules, counters, anonymous aggregates, recorded video, RTSP allowlists |
-| Perception | `crowdent.perception` | Homography, Farneback flow, ONNX density, crowd-pressure index |
-| Numerics | `crowdent.numerics` | Weidmann speeds, eikonal routes, upwind continuity, localized EnKF |
-| Safety | `crowdent.safety` | Fail-degraded readiness and advisory-only policy |
-| Auth | `crowdent.auth` | Argon2, TOTP, JWT sessions, role checks |
-| Storage | `crowdent.storage` | Single-writer SQLite, hash-chained audit, atomic `.npz` chunks |
-| API | `crowdent.api` | FastAPI research surface, no actuation routes |
-| Console | `frontend/` | Ranked zones, ensemble chart, human lifecycle |
-
-## Runtime modes
-
-`DEMO_DETERMINISTIC`, `REPLAY_RESEARCH`, and `FIELD_RESEARCH` are immutable
-for a process lifetime. Switching modes requires a new process and a new
-config hash.
-
-## Data stores
-
-- SQLite in WAL mode with one writer lock per database path.
-- Append-only audit records with a SHA-256 hash chain.
-- Atomic NumPy chunk files plus a manifest for replay export.
-- Raw video is off by default and never required for the demo.
-
-## Non-goals
-
-- No actuator, PLC, or digital-signage client.
-- No automatic instruction execution.
-- PyTorch is training-only. Runtime inference uses ONNX Runtime.
+The room-walk and tunnel replays are synthetic. They exist so the
+laptop fallback is deterministic offline. They are not IO-VNBD scores.

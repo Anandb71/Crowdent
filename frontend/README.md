@@ -1,12 +1,14 @@
-# Operator console
+# StillDot console
 
-React + Vite UI for the Crowdent research API.
+Judge-facing replay of the dead-reckoning engine.
 
-This console is **research only** and **not deployment certified**. See the
-repository [README](../README.md) and [docs/operator.md](../docs/operator.md).
-
-```sh
-npm ci
+```bash
+npm install
 npm run dev
+```
+
+Needs the API on `127.0.0.1:8000` or the baked files in `public/demo/`.
+
+```bash
 npm run check
 ```
