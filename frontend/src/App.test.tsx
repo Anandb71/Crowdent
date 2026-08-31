@@ -91,25 +91,26 @@ beforeEach(() => {
       return new Response('missing', { status: 404 })
     }),
   )
-  HTMLCanvasElement.prototype.getContext = vi.fn(() => {
-    return {
-      setTransform: vi.fn(),
-      fillRect: vi.fn(),
-      strokeRect: vi.fn(),
-      beginPath: vi.fn(),
-      moveTo: vi.fn(),
-      lineTo: vi.fn(),
-      stroke: vi.fn(),
-      fill: vi.fn(),
-      arc: vi.fn(),
-      save: vi.fn(),
-      restore: vi.fn(),
-      translate: vi.fn(),
-      rotate: vi.fn(),
-      closePath: vi.fn(),
-      setLineDash: vi.fn(),
-    } as unknown as CanvasRenderingContext2D
-  })
+  const stub = {
+    setTransform: vi.fn(),
+    fillRect: vi.fn(),
+    strokeRect: vi.fn(),
+    beginPath: vi.fn(),
+    moveTo: vi.fn(),
+    lineTo: vi.fn(),
+    stroke: vi.fn(),
+    fill: vi.fn(),
+    arc: vi.fn(),
+    save: vi.fn(),
+    restore: vi.fn(),
+    translate: vi.fn(),
+    rotate: vi.fn(),
+    closePath: vi.fn(),
+    setLineDash: vi.fn(),
+  }
+  vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockImplementation(
+    () => stub as unknown as CanvasRenderingContext2D,
+  )
 })
 
 test('console shows the offline pitch chrome', async () => {

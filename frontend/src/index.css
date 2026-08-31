@@ -198,6 +198,11 @@ button {
   color: #1a1204;
 }
 
+.controls button:disabled {
+  opacity: 0.45;
+  cursor: wait;
+}
+
 .drift {
   display: grid;
   gap: 4px;

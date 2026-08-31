@@ -31,9 +31,6 @@ export default function App() {
 
   useEffect(() => {
     let cancelled = false
-    setPlaying(false)
-    setIndex(0)
-    setError(null)
     void fetchRun(scenarioId)
       .then((result) => {
         if (!cancelled) setRun(result)
@@ -91,7 +88,16 @@ export default function App() {
 
   const frame = run?.frames[index]
   const finished = Boolean(run && index >= run.frames.length - 1 && !playing)
-  const driftClass = run && run.metrics.requirement_met ? '' : 'fail'
+  const liveDrift = run ? hypot(frame, run) : 0
+  const livePct =
+    run && run.metrics.distance_m > 0 ? (100 * liveDrift) / run.metrics.distance_m : 0
+  const liveNaive = frame
+    ? Math.hypot(frame.naive_x - frame.truth_x, frame.naive_y - frame.truth_y)
+    : (run?.metrics.naive_drift_m ?? 0)
+  const shownDrift = finished && run ? run.metrics.drift_m : liveDrift
+  const shownPct = finished && run ? run.metrics.drift_pct : livePct
+  const shownNaive = finished && run ? run.metrics.naive_drift_m : liveNaive
+  const driftClass = run && (finished ? run.metrics.requirement_met : livePct < run.metrics.requirement_pct) ? '' : 'fail'
 
   const activeStages = useMemo(() => {
     const stage = frame?.stage ?? 'idle'
@@ -144,7 +150,13 @@ export default function App() {
                 key={row.id}
                 type="button"
                 className={row.id === scenarioId ? 'active' : ''}
-                onClick={() => setScenarioId(row.id)}
+                onClick={() => {
+                  setPlaying(false)
+                  setIndex(0)
+                  setError(null)
+                  setRun(null)
+                  setScenarioId(row.id)
+                }}
               >
                 {row.label}
               </button>
@@ -152,6 +164,7 @@ export default function App() {
             <button
               type="button"
               className={playing ? 'start' : 'start go'}
+              disabled={!run}
               onClick={() => {
                 if (!run) return
                 if (finished) setIndex(0)
@@ -171,12 +184,12 @@ export default function App() {
 
           <div className="drift">
             <div className="drift-label">Drift vs surveyed end</div>
-            <div className={`drift-num ${finished && driftClass ? driftClass : ''}`} data-testid="drift">
-              {run ? `${fmt(finished ? run.metrics.drift_m : hypot(frame, run), 2)} m` : '—'}
+            <div className={`drift-num ${run ? driftClass : ''}`} data-testid="drift">
+              {run ? `${fmt(shownDrift, 2)} m` : '—'}
             </div>
             <div className="drift-label" data-testid="drift-pct">
               {run
-                ? `${fmt(finished ? run.metrics.drift_pct : 0, 2)} % of ${fmt(run.metrics.distance_m, 1)} m  ·  bar < ${fmt(run.metrics.requirement_pct, 0)} %`
+                ? `${fmt(shownPct, 2)} % of ${fmt(run.metrics.distance_m, 1)} m  ·  bar < ${fmt(run.metrics.requirement_pct, 0)} %`
                 : 'loading replay'}
             </div>
           </div>
@@ -184,7 +197,7 @@ export default function App() {
           <div className="metrics">
             <div>
               <span>Naive ∫∫a</span>
-              {run ? `${fmt(run.metrics.naive_drift_m, 1)} m` : '—'}
+              {run ? `${fmt(shownNaive, 1)} m` : '—'}
             </div>
             <div>
               <span>Speed</span>
