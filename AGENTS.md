@@ -1,24 +1,20 @@
 # Agent notes
 
-This repository is an offline crowd-risk **research** platform.
+StillDot is an offline smartphone dead-reckoning **research demo**
+for SIH26168.
 
 ## Invariants
 
 - Never add gate, PA, PLC, or signage actuation.
-- Never emit countdown or advice unless `ReadinessState.READY`.
-- Never import `torch` from `src/crowdent`.
-- Never let field profiles inherit demo network or docs settings.
-- Never bind non-loopback without `allow_lan: true`.
-- Never accept device identifiers in passive aggregates.
-- Crowd pressure is an index in `s^-2`, not Pascals.
-- Optical flow is not density.
-- Do not commit videos, weights, `.env`, or personal identifiers.
-- Do not label releases deployment-ready.
-- Never give `crowdent.datasets` a network client. It records terms; it
-  does not download, and it never accepts a licence for an operator.
-- Never let `crowdent.verification` set readiness, emit a countdown, or
-  gate advice. `calibrated` is a screening result, not readiness.
-- Never quote an absolute CRPS without its baseline skill score.
+- Never import `torch` from `src/stilldot`.
+- Never bind non-loopback without an explicit, refused-by-default check.
+- Never claim a deployment-ready release.
+- Never quote drift without distance, duration, and scenario.
+- Optical-flow / crowd-density leftovers do not belong in this tree.
+- Do not commit videos, `.env`, or personal identifiers.
+- Do not download IO-VNBD from the engine. Record terms; do not ingest.
+- The network estimates speed and uncertainty. The filter estimates
+  position. Do not train a network to emit coordinates.
 
 ## Tooling
 
@@ -28,5 +24,5 @@ This repository is an offline crowd-risk **research** platform.
 
 ## Docs
 
-User-facing documentation is under `docs/`. Keep the research-only warning
-in README and the operator console.
+User-facing documentation is under `docs/` and `README.md`. Keep the
+research-only warning on the console and in the README.

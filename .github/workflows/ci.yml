@@ -32,9 +32,9 @@ jobs:
       - name: Install
         run: uv sync --frozen --group dev
       - name: Ruff
-        run: uv run ruff check src tests training
+        run: uv run ruff check src tests
       - name: Mypy
-        run: uv run mypy src/crowdent
+        run: uv run mypy src/stilldot
       - name: Pytest
         run: uv run pytest -q --cov --cov-report=term-missing --cov-fail-under=80
 
@@ -81,18 +81,3 @@ jobs:
       - uses: trufflesecurity/trufflehog@v3.97.0
         with:
           extra_args: --results=verified,unknown
-
-  sbom:
-    name: SBOM
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: anchore/sbom-action@v0
-        with:
-          path: .
-          format: spdx-json
-          output-file: crowdent.spdx.json
-      - uses: actions/upload-artifact@v4
-        with:
-          name: sbom
-          path: crowdent.spdx.json

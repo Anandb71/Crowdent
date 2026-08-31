@@ -1,20 +1,12 @@
 [project]
-name = "crowdent"
+name = "stilldot"
 version = "0.1.0"
-description = "Offline, uncertainty-aware crowd-crush forecasting and intervention decision support"
+description = "Offline smartphone dead-reckoning demo for SIH26168 — speed from motion, physics in the filter"
 readme = "README.md"
-authors = [
-    { name = "Crowdent contributors" }
-]
+authors = [{ name = "SIH26168" }]
 requires-python = ">=3.13"
 license = "Apache-2.0"
-keywords = [
-    "crowd-safety",
-    "disaster-management",
-    "computer-vision",
-    "sensor-fusion",
-    "forecasting",
-]
+keywords = ["dead-reckoning", "imu", "inertial-navigation", "smartphone"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Science/Research",
@@ -22,34 +14,16 @@ classifiers = [
     "Topic :: Scientific/Engineering",
 ]
 dependencies = [
-    "argon2-cffi>=25.1.0",
-    "cryptography>=50.0.0",
     "fastapi>=0.141.1",
-    "numba>=0.67.0",
-    "numpy>=2.5.2",
-    "onnxruntime>=1.29.0",
-    "opencv-python-headless>=5.0.0.93",
-    "pydantic>=2.13.4",
-    "pydantic-settings>=2.15.0",
-    "pyjwt>=2.13.0",
-    "pyotp>=2.10.0",
-    "python-multipart>=0.0.32",
-    "pyyaml>=6.0.3",
-    "rich>=15.0.0",
-    "scipy>=1.18.1",
-    "structlog>=26.1.0",
-    "typer>=0.27.1",
-    "uvicorn[standard]>=0.52.4",
+    "numpy>=2.2.0",
+    "pydantic>=2.11.0",
+    "rich>=14.0.0",
+    "typer>=0.16.0",
+    "uvicorn[standard]>=0.35.0",
 ]
 
 [project.scripts]
-crowdent = "crowdent.cli:app"
-
-[project.optional-dependencies]
-training = [
-    "onnx>=1.22.0",
-    "torch>=2.13.0",
-]
+stilldot = "stilldot.cli:app"
 
 [build-system]
 requires = ["uv_build>=0.11.32,<0.13.0"]
@@ -58,13 +32,11 @@ build-backend = "uv_build"
 [dependency-groups]
 dev = [
     "httpx>=0.28.1",
-    "hypothesis>=6.165.10",
-    "mypy>=2.3.1",
-    "pytest>=9.1.1",
-    "pytest-asyncio>=1.4.0",
-    "pytest-cov>=7.1.0",
-    "ruff>=0.16.4",
-    "types-pyyaml>=6.0.12.20260815",
+    "mypy>=1.17.0",
+    "pytest>=8.4.0",
+    "pytest-asyncio>=1.1.0",
+    "pytest-cov>=6.2.0",
+    "ruff>=0.12.0",
 ]
 
 [tool.pytest.ini_options]
@@ -75,7 +47,7 @@ pythonpath = ["."]
 
 [tool.coverage.run]
 branch = true
-source = ["crowdent"]
+source = ["stilldot"]
 
 [tool.coverage.report]
 show_missing = true
@@ -88,26 +60,26 @@ exclude_also = [
 [tool.ruff]
 target-version = "py313"
 line-length = 100
-src = ["src", "tests", "training"]
+src = ["src", "tests"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
 ignore = ["E501"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["crowdent"]
+known-first-party = ["stilldot"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**/*.py" = ["S101", "RUF012", "RUF043", "SIM117"]
 
 [tool.mypy]
 python_version = "3.13"
-packages = ["crowdent"]
+packages = ["stilldot"]
 strict = true
 warn_unreachable = true
 show_error_codes = true
 plugins = ["pydantic.mypy"]
 
 [[tool.mypy.overrides]]
-module = ["cv2.*", "numba.*", "onnxruntime.*", "scipy.*"]
+module = ["numpy.*"]
 ignore_missing_imports = true

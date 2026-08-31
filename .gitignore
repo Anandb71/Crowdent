@@ -32,7 +32,8 @@ credentials*.json
 service-account*.json
 secrets/
 
-# Crowdent runtime state
+# Runtime state
+.stilldot/
 .crowdent/
 /runtime/
 logs/

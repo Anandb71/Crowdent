@@ -9,12 +9,6 @@ class ResizeObserverStub {
 }
 
 vi.stubGlobal('ResizeObserver', ResizeObserverStub)
-vi.stubGlobal(
-  'fetch',
-  vi.fn(async () => {
-    throw new Error('API intentionally unavailable in isolated UI tests')
-  }),
-)
 
 afterEach(() => {
   cleanup()
